@@ -1,0 +1,65 @@
+<html>
+
+<head>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <h1>Parent</h1>
+  <input id="parent-input-1" type="text">
+  <button id="btn-1">Post to child</button>
+  <br>
+  <input id="parent-input-2" type="text">
+  <button id="btn-2">Post to child</button>
+  <hr>
+  <label>Value 1 receive from parent: </label>
+  <span id="value-1"></span>
+  <hr>
+  <iframe id="child-frame" src="child.html" width="100%" height="100%"></iframe>
+</body>
+<script>
+  
+  // Should define protory to easy for handle message, in this case the prototype is {type: string, value: any}
+
+  function postMessage(mes) {
+    let target = document.getElementById("child-frame").contentWindow;
+    target.postMessage(mes, "*");
+  }
+
+  function receiveMessage(event) {
+    // handle message by type
+    switch (event.data.type) {
+      case "value-1":
+        $("#value-1").html(event.data.value)
+        break;
+    }
+  }
+
+  window.addEventListener("message", receiveMessage, false);
+
+
+  // Send message 1 to child when click on button 1
+  $("#btn-1").click(function () {
+    let value = $("#parent-input-1").val()
+
+    let message = {
+      type: "value-1",
+      value: value
+    }
+    postMessage(message)
+  })
+
+  // Send message 2 to child when click on button 2
+  $("#btn-2").click(function () {
+    let value = $("#parent-input-2").val()
+    let message = {
+      type: "value-2",
+      value: value
+    }
+    postMessage(message)
+  })
+
+</script>
+
+</html>

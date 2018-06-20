@@ -1,0 +1,49 @@
+<html>
+
+<head>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <h1>Child</h1>
+  <input id="child-input" type="text">
+  <button id="btn-1">Post to parent</button>
+  <hr>
+  <label>Value 1 receive from child: </label>
+  <span id="value-1"></span>
+  <br>
+  <label>Value 2 receive from child: </label>
+  <span id="value-2"></span>
+</body>
+<script>
+
+  function postMessage(mes) {
+    let target = parent.postMessage ? parent : (parent.document.postMessage ? parent.document : undefined)
+    target.postMessage(mes, "*");
+  }
+
+  function receiveMessage(event) {
+    switch (event.data.type) {
+      case "value-1":
+        $("#value-1").html(event.data.value)
+        break;
+      case "value-2":
+        $("#value-2").html(event.data.value)
+        break;
+    }
+  }
+  window.addEventListener("message", receiveMessage, false);
+
+  $("#btn-1").click(function () {
+    let value = $("#child-input").val()
+    let message = {
+      type: "value-1",
+      value: value
+    }
+    postMessage(message)
+  })
+
+</script>
+
+</html>
